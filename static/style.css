@@ -39,3 +39,23 @@ button {
     border-radius: 6px;
     cursor: pointer;
 }
+
+.pending {
+background-color: #cccccc;
+padding: 4px 8px;
+border-radius: 6px;
+}
+
+.moving {
+background-color: #ffe066;
+padding: 4px 8px;
+border-radius: 6px;
+}
+
+.done {
+background-color: #8ce99a;
+padding: 4px 8px;
+border-radius: 6px;
+}
+
+

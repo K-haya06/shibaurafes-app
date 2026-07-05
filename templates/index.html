@@ -3,38 +3,134 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <title>家具移動管理</title>
 
 ```
+<meta charset="UTF-8">
+
+<title>
+    家具移動管理
+</title>
+
 <style>
 
     body {
         font-family: sans-serif;
+        background-color: #f1f3f5;
+        margin: 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+
+        background-color: white;
+
+        width: 320px;
+
+        border-radius: 12px;
+
         padding: 20px;
+
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
     }
 
-    table {
-        border-collapse: collapse;
-        width: 100%;
+    .done-card {
+        opacity: 0.6;
     }
 
-    th, td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        text-align: center;
+    .header {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 15px;
+
     }
 
-    th {
-        background-color: #f0f0f0;
+    .room {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .group {
+        color: #666666;
+        margin-bottom: 10px;
+    }
+
+    .status {
+
+        padding: 5px 10px;
+
+        border-radius: 8px;
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+    }
+
+    .pending {
+        background-color: #ced4da;
+    }
+
+    .moving {
+        background-color: #ffe066;
+    }
+
+    .done {
+        background-color: #8ce99a;
+    }
+
+    .section {
+        margin-top: 15px;
+    }
+
+    .label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .data {
+        margin-left: 10px;
+        line-height: 1.8;
+    }
+
+    form {
+        margin-top: 20px;
     }
 
     select {
-        padding: 4px;
+        padding: 5px;
     }
 
     button {
-        padding: 4px 8px;
+        padding: 5px 10px;
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
+    .note {
+
+        background-color: #fff9db;
+
+        padding: 10px;
+
+        border-radius: 8px;
+
+        margin-top: 10px;
+
     }
 
 </style>
@@ -45,87 +141,220 @@
 <body>
 
 ```
-<h1>家具移動管理</h1>
+<h1>
+    家具移動管理
+</h1>
 
-<table>
-
-    <tr>
-        <th>階数</th>
-        <th>教室</th>
-        <th>団体名</th>
-        <th>机移動数</th>
-        <th>椅子移動数</th>
-        <th>机移動先</th>
-        <th>椅子移動先</th>
-        <th>状態</th>
-        <th>担当者</th>
-        <th>更新</th>
-    </tr>
+<div class="container">
 
     {% for room in rooms %}
 
-    <tr>
+    <div class="card {% if room['状態'] == '完了' %}done-card{% endif %}">
 
-        <td>{{ room["階数"] }}</td>
-        <td>{{ room["教室"] }}</td>
-        <td>{{ room["団体名"] }}</td>
+        <div class="header">
 
-        <td>
-            {{
-                room["机α（移動数）"] +
-                room["机β（移動数）"]
-            }}
-        </td>
+            <div>
 
-        <td>{{ room["椅子（移動数）"] }}</td>
+                <div class="room">
+                    {{ room["教室"] }}
+                </div>
 
-        <td>{{ room["机移動先"] }}</td>
+                <div class="group">
+                    {{ room["団体名"] }}
+                </div>
 
-        <td>{{ room["椅子移動先"] }}</td>
+            </div>
 
-        <td>{{ room["状態"] }}</td>
+            <div>
 
-        <td>{{ room["担当者"] }}</td>
+                {% if room["状態"] == "未着手" %}
 
-        <td>
-
-            <form action="/update_status" method="post">
-
-                <input
-                    type="hidden"
-                    name="room_id"
-                    value="{{ room['id'] }}"
-                >
-
-                <select name="status">
-
-                    <option value="未着手">
+                    <span class="status pending">
                         未着手
-                    </option>
+                    </span>
 
-                    <option value="移動中">
+                {% elif room["状態"] == "移動中" %}
+
+                    <span class="status moving">
                         移動中
-                    </option>
+                    </span>
 
-                    <option value="完了">
+                {% elif room["状態"] == "完了" %}
+
+                    <span class="status done">
                         完了
-                    </option>
+                    </span>
 
-                </select>
+                {% endif %}
 
-                <button type="submit">
-                    更新
-                </button>
+            </div>
 
-            </form>
+        </div>
 
-        </td>
+        <div class="section">
 
-    </tr>
+            <div class="label">
+                基本情報
+            </div>
+
+            <div class="data">
+
+                階数：
+                {{ room["階数"] }}
+
+                <br>
+
+                担当者：
+                {{ room["担当者"] }}
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="label">
+                机α
+            </div>
+
+            <div class="data">
+
+                元：
+                {{ room["机α（元の数）"] }}
+
+                <br>
+
+                使用：
+                {{ room["机α（使用数）"] }}
+
+                <br>
+
+                移動：
+                {{ room["机α（移動数）"] }}
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="label">
+                机β
+            </div>
+
+            <div class="data">
+
+                元：
+                {{ room["机β（元の数）"] }}
+
+                <br>
+
+                使用：
+                {{ room["机β（使用数）"] }}
+
+                <br>
+
+                移動：
+                {{ room["机β（移動数）"] }}
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="label">
+                椅子
+            </div>
+
+            <div class="data">
+
+                元：
+                {{ room["椅子（元の数）"] }}
+
+                <br>
+
+                使用：
+                {{ room["椅子（使用数）"] }}
+
+                <br>
+
+                移動：
+                {{ room["椅子（移動数）"] }}
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="label">
+                移動先
+            </div>
+
+            <div class="data">
+
+                机：
+                {{ room["机移動先"] }}
+
+                <br>
+
+                椅子：
+                {{ room["椅子移動先"] }}
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="label">
+                備考
+            </div>
+
+            <div class="note">
+
+                {{ room["備考"] }}
+
+            </div>
+
+        </div>
+
+        <form action="/update_status" method="post">
+
+            <input
+                type="hidden"
+                name="room_id"
+                value="{{ room['id'] }}"
+            >
+
+            <select name="status">
+
+                <option value="未着手">
+                    未着手
+                </option>
+
+                <option value="移動中">
+                    移動中
+                </option>
+
+                <option value="完了">
+                    完了
+                </option>
+
+            </select>
+
+            <button type="submit">
+                更新
+            </button>
+
+        </form>
+
+    </div>
 
     {% endfor %}
 
-</table>
+</div>
 ```
 
 </body>
