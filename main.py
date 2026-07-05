@@ -43,14 +43,14 @@ sheet = client.open("学園祭管理").sheet1
 def home(request: Request):
 
     # スプレッドシートのデータ取得
-    rooms = sheet.get_all_records()
+    data = sheet.get_all_records()
 
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={
             "request": request,
-            "rooms": rooms
+            "rooms": data
         }
     )
 
@@ -81,7 +81,7 @@ def update_status(
 
             # status列更新
             # C列なので3
-            sheet.update_cell(row_number, 3, status)
+            sheet.update_cell(row_number, 16, status)
 
             break
 

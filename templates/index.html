@@ -1,96 +1,133 @@
 <!DOCTYPE html>
+
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
+    <title>家具移動管理</title>
 
-    <title>学園祭管理</title>
+```
+<style>
 
-    <link rel="stylesheet" href="/static/style.css">
+    body {
+        font-family: sans-serif;
+        padding: 20px;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f0f0f0;
+    }
+
+    select {
+        padding: 4px;
+    }
+
+    button {
+        padding: 4px 8px;
+    }
+
+</style>
+```
 
 </head>
+
 <body>
 
-    <h1>教室一覧</h1>
-    
-    <h2>教室追加</h2>
+```
+<h1>家具移動管理</h1>
 
-    <form action="/add_room" method="post">
+<table>
 
-        <input
-            type="text"
-            name="name"
-            placeholder="教室名"
-            required
-        >
-
-        <input
-            type="number"
-            name="desks"
-            placeholder="机数"
-            required
-        >
-
-        <input
-            type="number"
-            name="chairs"
-            placeholder="椅子数"
-            required
-        >
-
-        <button type="submit">
-            追加
-        </button>
-
-    </form>
-
+    <tr>
+        <th>階数</th>
+        <th>教室</th>
+        <th>団体名</th>
+        <th>机移動数</th>
+        <th>椅子移動数</th>
+        <th>机移動先</th>
+        <th>椅子移動先</th>
+        <th>状態</th>
+        <th>担当者</th>
+        <th>更新</th>
+    </tr>
 
     {% for room in rooms %}
 
-    <div class="room-card">
+    <tr>
 
-        <h2>{{ room.name }}</h2>
+        <td>{{ room["階数"] }}</td>
+        <td>{{ room["教室"] }}</td>
+        <td>{{ room["団体名"] }}</td>
 
-        <p class="status {{ room.status }}">
-            状態 : {{ room.status }}
-        </p>
+        <td>
+            {{
+                room["机α（移動数）"] +
+                room["机β（移動数）"]
+            }}
+        </td>
 
-        <form action="/update_status" method="post">
+        <td>{{ room["椅子（移動数）"] }}</td>
 
-            <input
-                type="hidden"
-                name="room_id"
-                value="{{ room.id }}"
-            >
+        <td>{{ room["机移動先"] }}</td>
 
-            <button
-                type="submit"
-                name="status"
-                value="未確認"
-            >
-                未確認
-            </button>
+        <td>{{ room["椅子移動先"] }}</td>
 
-            <button
-                type="submit"
-                name="status"
-                value="移動中"
-            >
-                移動中
-            </button>
+        <td>{{ room["状態"] }}</td>
 
-            <button
-                type="submit"
-                name="status"
-                value="完了"
-            >
-                完了
-            </button>
+        <td>{{ room["担当者"] }}</td>
 
-        </form>
+        <td>
 
-    </div>
+            <form action="/update_status" method="post">
+
+                <input
+                    type="hidden"
+                    name="room_id"
+                    value="{{ room['id'] }}"
+                >
+
+                <select name="status">
+
+                    <option value="未着手">
+                        未着手
+                    </option>
+
+                    <option value="移動中">
+                        移動中
+                    </option>
+
+                    <option value="完了">
+                        完了
+                    </option>
+
+                </select>
+
+                <button type="submit">
+                    更新
+                </button>
+
+            </form>
+
+        </td>
+
+    </tr>
 
     {% endfor %}
 
+</table>
+```
+
 </body>
+
 </html>
